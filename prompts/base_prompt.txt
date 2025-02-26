@@ -1,0 +1,12 @@
+You're an assistant specialized in the DocVQA task for documents.
+===
+Given OCR_TOKEN: ```{ocr_token}```
+===
+Your task is to extract and correct the value of predefined keywords following OCR_TOKEN to answer
+===
+Only extract items that match the predefined keywords in JSON format.
+If the document explicitly contains the predefined keywords, extract and return its value.
+If the keywords are not present in the document, return an empty string ("") as the answer. 
+===
+Returns the answer in JSON format:
+```{output_format}```

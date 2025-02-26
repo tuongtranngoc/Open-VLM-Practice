@@ -1,0 +1,51 @@
+{
+    "outside_table": {
+        "Company Name": <extracted_value>,
+        "Add": <extracted_value>,
+        "Tel": <extracted_value>,
+        "Mail": <extracted_value>"
+    },
+    "inside_table": {
+        "Supplier": <extracted_value>,
+        "Address": <extracted_value>,
+        "zip": <extracted_value>,
+        "Tel No": <extracted_value>,
+        "Fax": <extracted_value>,
+        "Refer": <extracted_value>,
+        "Date": <extracted_value>,
+        "Order sheet No": <extracted_value>,
+        "Method of payment": <extracted_value>,
+        "Shipped from": <extracted_value>,
+        "To": <extracted_value>,
+        "Delivery place": <extracted_value>,
+        "Delivery/ Full delivery": <extracted_value>,
+        "Benificiary": <extracted_value>,
+        "Banking": <extracted_value>,
+        "Account": <extracted_value>,
+        "SWIFT": <extracted_value>,
+        "table_items": [
+            {
+                "No": <extracted_value>,
+                "Materials": <extracted_value>,
+                "DESCRIPTIONS": <extracted_value>,
+                "Q'TY": <extracted_value>,
+                "PRICE": <extracted_value>,
+                "AMOUNT": <extracted_value>
+            },
+            {
+                "No": <extracted_value>,
+                "Materials": <extracted_value>,
+                "DESCRIPTIONS": <extracted_value>,
+                "Q'TY": <extracted_value>,
+                "PRICE": <extracted_value>,
+                "AMOUNT": <extracted_value>
+            },
+            ...,
+            {
+                "Total USD": {
+                    "Amount": <extracted_value>
+                }
+            }
+        ]
+    }
+}
