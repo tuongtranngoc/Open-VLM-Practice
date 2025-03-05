@@ -1,4 +1,4 @@
-from ... import config as cfg
+from tools import config as cfg
 from vlm.utils.text import make_json
 from transformers import Qwen2_5_VLForConditionalGeneration, AutoProcessor
 

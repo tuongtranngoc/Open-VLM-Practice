@@ -3,7 +3,7 @@ import glob
 import os
 
 
-CFG_PATH = 'src/configs/base.yml'
+CFG_PATH = 'configs/base.yml'
 
 
 def load_config(file_path=CFG_PATH):

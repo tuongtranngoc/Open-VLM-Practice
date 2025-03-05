@@ -1,10 +1,10 @@
 import time
 from PIL import Image
 
+from vlm.utils.image import *
 from vlm.modules.qwen_vl import DocVQA
-from vlm.utils.image import pdf_to_images_from_bytes, pdf_to_images_from_path
 
-from .. import config as cfg
+from tools import config as cfg
 
 
 class DocExtractor:
@@ -17,7 +17,7 @@ class DocExtractor:
         elif pdf_type == 'from_bytes':
             images = pdf_to_images_from_bytes(pdf.read())[:cfg['Dataset']['max_page']]
         else:
-            images = [Image.open(pdf)]
+            images = [read_byte_io(pdf)]
         vqa_results = self.doc_vqa.extract_wt_outformat(images, output_format)
         return vqa_results
     
@@ -27,7 +27,7 @@ class DocExtractor:
         elif pdf_type == 'from_bytes':
             images = pdf_to_images_from_bytes(pdf.read())[:cfg['Dataset']['max_page']]
         else:
-            images = [Image.open(pdf)]
+            images = [read_byte_io(pdf)]
         vqa_results = self.doc_vqa.extract_wt_prompt(images, prompt)
         return vqa_results
     
@@ -37,7 +37,7 @@ class DocExtractor:
         elif pdf_type == 'from_bytes':
             images = pdf_to_images_from_bytes(pdf.read())[:cfg['Dataset']['max_page']]
         else:
-            images = [Image.open(pdf)]
+            images = [read_byte_io(pdf)]
         vqa_results = self.doc_vqa.extract_wt_ocrtoken(images, output_format, ocr_token)
         return vqa_results
 

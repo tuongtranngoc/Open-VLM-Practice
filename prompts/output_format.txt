@@ -1,51 +1,158 @@
 {
     "outside_table": {
-        "Company Name": <extracted_value>,
-        "Add": <extracted_value>,
-        "Tel": <extracted_value>,
-        "Mail": <extracted_value>"
-    },
-    "inside_table": {
-        "Supplier": <extracted_value>,
-        "Address": <extracted_value>,
-        "zip": <extracted_value>,
-        "Tel No": <extracted_value>,
-        "Fax": <extracted_value>,
-        "Refer": <extracted_value>,
-        "Date": <extracted_value>,
-        "Order sheet No": <extracted_value>,
-        "Method of payment": <extracted_value>,
-        "Shipped from": <extracted_value>,
-        "To": <extracted_value>,
-        "Delivery place": <extracted_value>,
-        "Delivery/ Full delivery": <extracted_value>,
-        "Benificiary": <extracted_value>,
-        "Banking": <extracted_value>,
-        "Account": <extracted_value>,
-        "SWIFT": <extracted_value>,
-        "table_items": [
-            {
-                "No": <extracted_value>,
-                "Materials": <extracted_value>,
-                "DESCRIPTIONS": <extracted_value>,
-                "Q'TY": <extracted_value>,
-                "PRICE": <extracted_value>,
-                "AMOUNT": <extracted_value>
+        "Contract ID": {
+            "text": <extracted_value>,
+            "confidence": <token_confidence>
+        },
+        "Contract date": {
+            "text": <extracted_value>,
+            "confidence": <token_confidence>
+        },
+        "The Seller": {
+            "Company": {
+                "text": <extracted_value>,
+                "confidence": <token_confidence>
             },
-            {
-                "No": <extracted_value>,
-                "Materials": <extracted_value>,
-                "DESCRIPTIONS": <extracted_value>,
-                "Q'TY": <extracted_value>,
-                "PRICE": <extracted_value>,
-                "AMOUNT": <extracted_value>
+            "Address": {
+                "text": <extracted_value>,
+                "confidence": <token_confidence>
             },
-            ...,
-            {
-                "Total USD": {
-                    "Amount": <extracted_value>
-                }
+            "Representative": {
+                "text": <extracted_value>,
+                "confidence": <token_confidence>
+            },
+            "Tax Number": {
+                "text": <extracted_value>,
+                "confidence": <token_confidence>
+            },
+            "Tel": {
+                "text": <extracted_value>,
+                "confidence": <token_confidence>
+            },
+            "Bank Name": {
+                "text": <extracted_value>,
+                "confidence": <token_confidence>
+            },
+            "Account Number": {
+                "text": <extracted_value>,
+                "confidence": <token_confidence>
+            },
+            "Swift Code": {
+                "text": <extracted_value>,
+                "confidence": <token_confidence>
+            },
+            "Account Name": {
+                "text": <extracted_value>,
+                "confidence": <token_confidence>
+            },
+            "Opened hour": {
+                "text": <extracted_value>,
+                "confidence": <token_confidence>
             }
-        ]
+        },
+        "The Buyer":
+            {
+            "Company": {
+                "text": <extracted_value>,
+                "confidence": <token_confidence>
+            },
+            "Address": {
+                "text": <extracted_value>,
+                "confidence": <token_confidence>
+            },
+            "Representative": {
+                "text": <extracted_value>,
+                "confidence": <token_confidence>
+            },
+            "Tax Number": {
+                "text": <extracted_value>,
+                "confidence": <token_confidence>
+            },
+            "Tel": {
+                "text": <extracted_value>,
+                "confidence": <token_confidence>
+            },
+            "Bank Name": {
+                "text": <extracted_value>,
+                "confidence": <token_confidence>
+            },
+            "Account Number": {
+                "text": <extracted_value>,
+                "confidence": <token_confidence>
+            },
+            "Swift Code": {
+                "text": <extracted_value>,
+                "confidence": <token_confidence>
+            },
+            "Account Name": {
+                "text": <extracted_value>,
+                "confidence": <token_confidence>
+            },
+            "Opened hour": {
+                "text": <extracted_value>,
+                "confidence": <token_confidence>
+            }
+        }
+        
+        "Article 4. Term of Payment": {
+            "Payment": [<extracted_value>, <extracted_value>...],
+            "Documents required for regotiation": [<extracted_value>, <extracted_value> ...],
+
+        }
     }
+    "Commodity - Quantity - Price": [
+        {
+            "No.": {
+                "text": <extracted_value>,
+                "confidence": <token_confidence>
+        },
+            "Description": {
+                "text": <extracted_value>,
+                "confidence": <token_confidence>
+        },
+            "Quantity (BOX)": {
+                "text": <extracted_value>,
+                "confidence": <token_confidence>
+        },
+            "Quantity (EA)": {
+                "text": <extracted_value>,
+                "confidence": <token_confidence>
+        },
+            "Unit Price (KRW)": {
+                "text": <extracted_value>,
+                "confidence": <token_confidence>
+        },
+            "Total Price (KRW)": {
+                "text": <extracted_value>,
+                "confidence": <token_confidence>
+        }
+        },
+        ... // If there are more than 1
+        {
+            "No.": {
+                "text": <extracted_value>,
+                "confidence": <token_confidence>
+        },
+            "Description": {
+                "text": <extracted_value>,
+                "confidence": <token_confidence>
+        },
+            "Quantity (BOX)": {
+                "text": <extracted_value>,
+                "confidence": <token_confidence>
+        },
+            "Quantity (EA)": {
+                "text": <extracted_value>,
+                "confidence": <token_confidence>
+        },
+            "Unit Price (KRW)": {
+                "text": <extracted_value>,
+                "confidence": <token_confidence>
+        },
+            "Total Price (KRW)": {
+                "text": <extracted_value>,
+                "confidence": <token_confidence>
+        }
+        },
+    ]
 }

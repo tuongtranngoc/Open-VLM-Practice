@@ -2,8 +2,8 @@ import time
 from flask_cors import CORS
 from flask import Flask, request
 
-from . import config as cfg
 from vlm.doc_vqa import DocExtractor
+from tools import config as cfg
 
 
 app = Flask(__name__)
@@ -104,7 +104,7 @@ def doc_vqa_v3():
         result = doc_extractor.extract_wt_ocrtoken(pdf=pdf_file,
                                        output_format=output_format,
                                        ocr_token=ocr_token,
-                                        pdf_type='from_bytes')
+                                        pdf_type=None)
         return {
             'status': 'success',
             'message': result,
