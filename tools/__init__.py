@@ -1,8 +1,10 @@
 import yaml
 import glob
 import os
+from dotenv import load_dotenv
 
 
+load_dotenv()
 CFG_PATH = 'configs/base.yml'
 
 

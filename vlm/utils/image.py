@@ -4,12 +4,12 @@ import io
 
 
 def pdf_to_images_from_path(fname):
-    pil_image_lst = convert_from_path(fname, dpi=500)
+    pil_image_lst = convert_from_path(fname, dpi=200)
     return pil_image_lst
 
 
 def pdf_to_images_from_bytes(fname):
-    pil_image_lst = convert_from_bytes(fname, dpi=500)
+    pil_image_lst = convert_from_bytes(fname, dpi=200)
     return pil_image_lst
 
 

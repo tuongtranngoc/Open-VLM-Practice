@@ -1,12 +1,16 @@
 PromptConfig:
+  ocrtoken_prompt: 'prompts/ocrtoken_prompt.txt'
   base_prompt: 'prompts/base_prompt.txt'
+  system_instruction: 'prompts/system_instruction.txt'
+
 
 ModelConfig:
   qwen_vl: 'unsloth/Qwen2.5-VL-7B-Instruct-unsloth-bnb-4bit'
-  # qwen_vl: 'Qwen/Qwen2.5-VL-3B-Instruct'
+  google_gemini: 'gemini-2.0-flash'
+  h2ovl: 'h2oai/h2ovl-mississippi-800m'
 
 Dataset:
-  max_page: 2
+  max_page: 4
 
 Deploy:
   port: 8077

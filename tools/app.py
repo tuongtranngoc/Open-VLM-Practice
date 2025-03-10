@@ -2,17 +2,18 @@ import time
 from flask_cors import CORS
 from flask import Flask, request
 
-from vlm.doc_vqa import DocExtractor
+from vlm.doc_vqa import QwenDocExtractor, GeminiDocExtractor
 from tools import config as cfg
 
 
 app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": "*"}})
 
-doc_extractor = DocExtractor()
+qwen_doc_extractor = QwenDocExtractor()
+gemini_doc_extractor = GeminiDocExtractor()
 
 
-@app.route('/api/v1/doc-vqa', methods=['POST'])
+@app.route('/api/v1/qwen-doc-vqa', methods=['POST'])
 def doc_vqa_v1():
     if 'pdf' not in request.files:
         return {
@@ -30,14 +31,13 @@ def doc_vqa_v1():
             'message': 'Not found output format',
         }
     try:
-        st = time.time()
-        result = doc_extractor.extract_wt_outformat(pdf=pdf_file,
+        result, total_time = qwen_doc_extractor.extract_wt_logic(pdf=pdf_file,
                                        output_format=output_format,
                                         pdf_type='from_bytes')
         return {
             'status': 'success',
             'message': result,
-            'time': time.time() - st
+            'time': total_time
         }
         
     except Exception as e:
@@ -47,43 +47,8 @@ def doc_vqa_v1():
         }
     
 
-@app.route('/api/v2/doc-vqa', methods=['POST'])
-def doc_vqa_v2():
-    if 'pdf' not in request.files:
-        return {
-            'status': 'error',
-            'message': 'Not found pdf file'
-        }
-    
-    pdf_file = request.files['pdf']
-    prompt = request.form.get('prompt', '')
-
-    if len(prompt) == 0:
-        return {
-            'status': 'error',
-            'message': 'Not exist prompt',
-        }
-    
-    try:
-        st = time.time()
-        result = doc_extractor.extract_wt_prompt(pdf=pdf_file,
-                                        prompt=prompt,
-                                        pdf_type='from_bytes')
-        return {
-            'status': 'success',
-            'message': result,
-            'time': time.time() - st
-        }
-        
-    except Exception as e:
-        return {
-            'status': 'error',
-            'message': str(e)
-        }
-        
-
-@app.route('/api/v3/doc-vqa', methods=['POST'])
-def doc_vqa_v3():
+@app.route('/api/v1/gemini-doc-vqa', methods=['POST'])
+def gemini_doc_vqa_v1():
     if 'pdf' not in request.files:
         return {
             'status': 'error',
@@ -92,7 +57,6 @@ def doc_vqa_v3():
     
     pdf_file = request.files['pdf']
     output_format = request.form.get('output_format', None)
-    ocr_token = request.form.get('ocr_token', [])
     
     if output_format is None:
         return {
@@ -100,15 +64,15 @@ def doc_vqa_v3():
             'message': 'Not found output format',
         }
     try:
-        st = time.time()
-        result = doc_extractor.extract_wt_ocrtoken(pdf=pdf_file,
+        result, ocr_time, vqa_time = gemini_doc_extractor.extract(pdf=pdf_file,
                                        output_format=output_format,
-                                       ocr_token=ocr_token,
-                                        pdf_type=None)
+                                        pdf_type="from_bytes")
         return {
             'status': 'success',
             'message': result,
-            'time': time.time() - st
+            'ocr_time': ocr_time,
+            'vqa_time': vqa_time,
+            'total_time': ocr_time + vqa_time,
         }
         
     except Exception as e:
@@ -116,7 +80,39 @@ def doc_vqa_v3():
             'status': 'error',
             'message': str(e)
         }
-
+        
+        
+@app.route('/api/v2/gemini-doc-vqa', methods=['POST'])
+def gemini_doc_vqa_v2():
+    if 'pdf' not in request.files:
+        return {
+            'status': 'error',
+            'message': 'Not found pdf file'
+        }
+    
+    pdf_file = request.files['pdf']
+    output_format = request.form.get('output_format', None)
+    
+    if output_format is None:
+        return {
+            'status': 'error',
+            'message': 'Not found output format',
+        }
+    try:
+        result, total_time = gemini_doc_extractor.extract_logic(pdf=pdf_file,
+                                       output_format=output_format,
+                                        pdf_type="from_bytes")
+        return {
+            'status': 'success',
+            'message': result,
+            'total_time': total_time,
+        }
+        
+    except Exception as e:
+        return {
+            'status': 'error',
+            'message': str(e)
+        }
 
 
 if __name__ == '__main__':

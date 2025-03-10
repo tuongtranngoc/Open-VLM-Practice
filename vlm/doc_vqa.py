@@ -1,25 +1,44 @@
 import time
-from PIL import Image
+import concurrent.futures
+from collections import defaultdict
 
 from vlm.utils.image import *
-from vlm.modules.qwen_vl import DocVQA
+from vlm.utils.matching import *
+from vlm.modules.qwen_vl import QwenDocVQA
+from vlm.modules.gemini import GeminiDocVQA
+from traditional_ocr.ocr_surya import OcrExtractor
 
 from tools import config as cfg
 
 
-class DocExtractor:
+class QwenDocExtractor:
     def __init__(self):
-        self.doc_vqa = DocVQA()
+        self.doc_vqa = QwenDocVQA()
+        self.doc_ocr = OcrExtractor()
     
-    def extract_wt_outformat(self, pdf, output_format, pdf_type='from_path'):
+    def extract_wt_logic(self, pdf, output_format, pdf_type='from_path'):
         if pdf_type == 'from_path':
             images = pdf_to_images_from_path(pdf)[:cfg['Dataset']['max_page']]
         elif pdf_type == 'from_bytes':
             images = pdf_to_images_from_bytes(pdf.read())[:cfg['Dataset']['max_page']]
         else:
             images = [read_byte_io(pdf)]
-        vqa_results = self.doc_vqa.extract_wt_outformat(images, output_format)
-        return vqa_results
+            
+        images_for_ocr = copy.deepcopy(images)
+        images_for_vqa = copy.deepcopy(images)
+
+        st = time.time()
+        with concurrent.futures.ThreadPoolExecutor(max_workers=2) as executor:
+            ocr_future = executor.submit(self.doc_ocr.extract, images_for_ocr)
+            vqa_future = executor.submit(self.doc_vqa.generate, images_for_vqa, output_format)
+            
+            ocr_results = ocr_future.result()[-1]
+            vqa_results = vqa_future.result()
+        
+        final_res = assign_confidence(vqa_results, ocr_results)
+        total_time = time.time() - st
+
+        return final_res, total_time
     
     def extract_wt_prompt(self, pdf, prompt, pdf_type='from_path'):
         if pdf_type == 'from_path':
@@ -28,27 +47,51 @@ class DocExtractor:
             images = pdf_to_images_from_bytes(pdf.read())[:cfg['Dataset']['max_page']]
         else:
             images = [read_byte_io(pdf)]
-        vqa_results = self.doc_vqa.extract_wt_prompt(images, prompt)
+        vqa_results = self.doc_vqa.generate_wt_prompt(images, prompt)
         return vqa_results
     
-    def extract_wt_ocrtoken(self, pdf, output_format, ocr_token, pdf_type='from_path'):
+
+class GeminiDocExtractor:
+    def __init__(self):
+        self.doc_vqa = GeminiDocVQA()
+        self.doc_ocr = OcrExtractor()
+
+    def extract_wt_ocrtoken(self, pdf, output_format, pdf_type='from_path'):
         if pdf_type == 'from_path':
             images = pdf_to_images_from_path(pdf)[:cfg['Dataset']['max_page']]
         elif pdf_type == 'from_bytes':
             images = pdf_to_images_from_bytes(pdf.read())[:cfg['Dataset']['max_page']]
         else:
             images = [read_byte_io(pdf)]
-        vqa_results = self.doc_vqa.extract_wt_ocrtoken(images, output_format, ocr_token)
-        return vqa_results
+            
+        ocr_st = time.time()
+        ocr_results = self.doc_ocr.extract(images)[-1]
+        ocr_time = time.time() - ocr_st
+        vqa_st = time.time()
+        vqa_results = self.doc_vqa.generate(images, output_format, ocr_token=dict(ocr_results))
+        vqa_time = time.time() - vqa_st
+        return vqa_results, ocr_time, vqa_time
+    
+    def extract_logic(self, pdf, output_format, pdf_type='from_path'):
+        if pdf_type == 'from_path':
+            images = pdf_to_images_from_path(pdf)[:cfg['Dataset']['max_page']]
+        elif pdf_type == 'from_bytes':
+            images = pdf_to_images_from_bytes(pdf.read())[:cfg['Dataset']['max_page']]
+        else:
+            images = [read_byte_io(pdf)]
+        
+        images_for_ocr = copy.deepcopy(images)
+        images_for_vqa = copy.deepcopy(images)
 
+        st = time.time()
+        with concurrent.futures.ThreadPoolExecutor(max_workers=2) as executor:
+            ocr_future = executor.submit(self.doc_ocr.extract, images_for_ocr)
+            vqa_future = executor.submit(self.doc_vqa.generate, images_for_vqa, output_format)
+            
+            ocr_results = ocr_future.result()[-1]
+            vqa_results = vqa_future.result()
+        
+        final_res = assign_confidence(vqa_results, ocr_results)
+        total_time = time.time() - st
 
-if __name__ == "__main__":
-    import time
-    DATA_PATH = '/home/tuongtran/tuongtn/Researching/Researching_Projects/DocumentAI/Open-VLM-Practice/data/shinhan_ocr_500/1.Contract/Template08_1page/page_1.png'
-    doc_extract = DocExtractor()
-    st = time.time()
-    ocr_token = open('src/modules/ocr/.debug/ocr_token.txt').read()
-    output_format = open('prompts/output_format.txt').read()
-    res = doc_extract.extract_wt_ocrtoken(DATA_PATH, output_format, ocr_token, pdf_type='png')
-    print(res)
-    print(f"Processing time: {round(time.time()-st, 3)} (s)")
+        return final_res, total_time
